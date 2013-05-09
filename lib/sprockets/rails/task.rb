@@ -5,22 +5,27 @@ require 'sprockets'
 module Sprockets
   module Rails
     class Task < Rake::SprocketsTask
-      attr_accessor :cache_path, :assets_config
+      attr_accessor :app
 
-      # Overrides assets to use have precompiled assets after loaded environment task
-      # NOTE: Should be removed after this will be merged in Sprocket
-      def assets
-        assets_config.precompile
+      def environment
+        app.assets
       end
 
-      # Overrides output to have value after loaded environment task
-      # NOTE: Should be removed after this will be merged in Sprocket
+      def assets
+        app.config.assets.precompile
+      end
+
       def output
-        if @output.respond_to?(:call)
-          @output = @output.call
-        else
-          @output
-        end
+        app.config.root.join('public', app.config.assets.prefix).to_s
+      end
+
+      def cache_path
+        app.config.root.join(%w(tmp cache assets)).to_s
+      end
+
+      def initialize(app)
+        self.app = app
+        super
       end
 
       def define

@@ -59,12 +59,7 @@ module Sprockets
     rake_tasks do |app|
       require 'sprockets/rails/task'
 
-      Sprockets::Rails::Task.new do |t|
-        t.environment   = lambda { app.assets }
-        t.output        = lambda { File.join(app.root, 'public', app.config.assets.prefix) }
-        t.assets_config = app.config.assets
-        t.cache_path    = "#{app.config.root}/tmp/cache/assets"
-      end
+      Sprockets::Rails::Task.new(app)
     end
 
     config.after_initialize do |app|
